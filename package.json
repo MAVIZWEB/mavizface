@@ -1,0 +1,20 @@
+{
+  "name": "mavizface",
+  "version": "1.0.0",
+  "description": "MAVIZ SWAPS Frontend Interface",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s . -l 3000",
+    "build": "echo 'No build step needed for static site'",
+    "dev": "serve -s . -l 3000"
+  },
+  "keywords": ["crypto", "tokens", "swap", "earning"],
+  "author": "MAVIZ Team",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
