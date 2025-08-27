@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+ <!DOCTYPE html>  
 <html lang="en">  
 <head>  
     <meta charset="UTF-8">  
@@ -138,10 +138,41 @@
             letter-spacing: 8px;  
             font-size: 24px;  
             text-align: center;  
-        }  
+        }
+
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            z-index: 100;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .connection-status.connected {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            color: #22c55e;
+        }
+        
+        .connection-status.disconnected {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #ef4444;
+        }
     </style>  
 </head>  
 <body class="min-h-screen flex flex-col">  
+    <!-- Connection Status Indicator -->
+    <div id="connection-status" class="connection-status hidden">
+        <i id="connection-icon" class="fas fa-circle"></i>
+        <span id="connection-text">Checking connection...</span>
+    </div>
+  
     <!-- Header -->  
     <header class="sticky top-0 z-30 bg-gradient-to-r from-yellow-400 to-yellow-500 border-b border-yellow-300 shadow-md">  
         <div class="container mx-auto px-4 py-2">  
@@ -523,7 +554,10 @@
           
         let paymentState = {  
             method: 'card'  
-        };  
+        };
+
+        // Track backend connection status
+        let backendConnected = false;
           
         // DOM Elements  
         const elements = {  
@@ -598,7 +632,12 @@
               
             // Landing page CTA  
             ctaSignup: document.getElementById('cta-signup'),  
-            ctaLogin: document.getElementById('cta-login')  
+            ctaLogin: document.getElementById('cta-login'),
+
+            // Connection status
+            connectionStatus: document.getElementById('connection-status'),
+            connectionIcon: document.getElementById('connection-icon'),
+            connectionText: document.getElementById('connection-text')
         };  
           
         // Initialize the application  
@@ -756,8 +795,9 @@
                     // First check if response is JSON  
                     const contentType = response.headers.get('content-type');  
                     if (!contentType || !contentType.includes('application/json')) {  
-                        const text = await response.text();  
-                        throw new Error(`Server returned HTML instead of JSON. Status: ${response.status}. Response: ${text.substring(0, 100)}...`);  
+                        // Try alternative endpoint if the first one fails
+                        await tryAlternativeAuthEndpoint('login', { email, pin });
+                        return;
                     }  
                       
                     const data = await response.json();  
@@ -818,8 +858,9 @@
                     // First check if response is JSON  
                     const contentType = response.headers.get('content-type');  
                     if (!contentType || !contentType.includes('application/json')) {  
-                        const text = await response.text();  
-                        throw new Error(`Server returned HTML instead of JSON. Status: ${response.status}. Response: ${text.substring(0, 100)}...`);  
+                        // Try alternative endpoint if the first one fails
+                        await tryAlternativeAuthEndpoint('signup', { email, pin, referralCode: referral || undefined });
+                        return;
                     }  
                       
                     const data = await response.json();  
@@ -849,7 +890,55 @@
                     showError('Registration Error', error.message);  
                 }  
             }  
-        }  
+        }
+
+        // Try alternative authentication endpoints
+        async function tryAlternativeAuthEndpoint(action, data) {
+            try {
+                // Try without /api/ prefix
+                const alternativeUrl = `${API_BASE_URL}/${action === 'login' ? 'auth/login' : 'auth/signup'}`;
+                const response = await fetch(alternativeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const responseData = await response.json();
+                
+                if (responseData.success) {
+                    // Save auth data  
+                    authState.isLoggedIn = true;  
+                    authState.token = responseData.token;  
+                    authState.user = responseData.user;  
+                      
+                    localStorage.setItem('mvzx_token', responseData.token);  
+                    localStorage.setItem('mvzx_user', JSON.stringify(responseData.user));  
+                    
+                    if (action === 'signup') {
+                        localStorage.setItem('mvzx_wallet', responseData.walletAddress);  
+                    }
+                      
+                    hideLoading();  
+                    elements.authModal.classList.add('hidden');  
+                    updateUIForAuthState();  
+                    loadUserData();  
+                      
+                    showSuccess('Success!', action === 'login' 
+                        ? 'You have successfully logged in.' 
+                        : `Your account has been created successfully. Your wallet address is: ${responseData.walletAddress}`);
+                } else {
+                    throw new Error(responseData.error || `${action} failed`);
+                }
+            } catch (error) {
+                hideLoading();
+                showError(
+                    `${action === 'login' ? 'Login' : 'Registration'} Error`, 
+                    'Server configuration issue. Please contact support if this persists.'
+                );
+            }
+        }
           
         // PIN validation function - Frontend JavaScript  
         function validatePIN(pin) {  
@@ -859,13 +948,59 @@
         // Test backend connection - Frontend JavaScript  
         async function testBackendConnection() {  
             try {  
-                const response = await fetch(`${API_BASE_URL}/api/health`);  
-                const data = await response.json();  
-                console.log('Backend health check:', data);  
-                return data.success === true;  
+                // Show connection status
+                elements.connectionStatus.classList.remove('hidden');
+                elements.connectionStatus.classList.remove('connected', 'disconnected');
+                elements.connectionIcon.className = 'fas fa-circle-notch fa-spin';
+                elements.connectionText.textContent = 'Checking connection...';
+                
+                const response = await fetch(`${API_BASE_URL}/api/health`, {
+                    // Add timeout to prevent hanging
+                    signal: AbortSignal.timeout(5000)
+                });  
+
+                // Try alternative health endpoint if first one fails
+                if (!response.ok) {
+                    const altResponse = await fetch(`${API_BASE_URL}/health`, {
+                        signal: AbortSignal.timeout(5000)
+                    });
+                    
+                    if (altResponse.ok) {
+                        const data = await altResponse.json();
+                        backendConnected = data.success === true;
+                    } else {
+                        throw new Error('Health check failed');
+                    }
+                } else {
+                    const data = await response.json();
+                    backendConnected = data.success === true;
+                }
+                
+                // Update connection status UI
+                if (backendConnected) {
+                    elements.connectionStatus.classList.add('connected');
+                    elements.connectionIcon.className = 'fas fa-check-circle';
+                    elements.connectionText.textContent = 'Connected to server';
+                    
+                    // Auto-hide after 3 seconds
+                    setTimeout(() => {
+                        elements.connectionStatus.classList.add('hidden');
+                    }, 3000);
+                } else {
+                    throw new Error('Health check did not return success');
+                }
+                
+                return backendConnected;
             } catch (error) {  
                 console.error('Backend connection test failed:', error);  
-                showError('Connection Error', 'Cannot connect to server. Please check your internet connection and try again.');  
+                backendConnected = false;
+                
+                // Update connection status UI
+                elements.connectionStatus.classList.add('disconnected');
+                elements.connectionIcon.className = 'fas fa-exclamation-circle';
+                elements.connectionText.textContent = 'Server connection issue';
+                
+                // Don't auto-hide error status
                 return false;  
             }  
         }  
