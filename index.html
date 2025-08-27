@@ -1,1372 +1,1229 @@
- <!DOCTYPE html>  
-<html lang="en">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>MAVIZ SWAPS - Token Swap & Earn</title>  
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">  
-    <style>  
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');  
-          
-        * {  
-            margin: 0;  
-            padding: 0;  
-            box-sizing: border-box;  
-            font-family: 'Poppins', sans-serif;  
-        }  
-          
-        body {  
-            background: linear-gradient(135deg, #3a0006 0%, #1a0020 50%, #000524 100%);  
-            color: white;  
-            min-height: 100vh;  
-        }  
-          
-        .glass-card {  
-            background: rgba(255, 255, 255, 0.06);  
-            backdrop-filter: blur(10px);  
-            border: 1px solid rgba(255, 255, 255, 0.1);  
-            border-radius: 16px;  
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);  
-        }  
-          
-        .btn-gold {  
-            background: linear-gradient(to right, #FFD700, #FFA500);  
-            color: #333;  
-            font-weight: bold;  
-            transition: all 0.3s;  
-        }  
-          
-        .btn-gold:hover {  
-            background: linear-gradient(to right, #FFA500, #FF8C00);  
-            transform: translateY(-2px);  
-            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);  
-        }  
-          
-        .btn-purple {  
-            background: linear-gradient(to right, #8B5CF6, #7C3AED);  
-            color: white;  
-            transition: all 0.3s;  
-        }  
-          
-        .btn-purple:hover {  
-            background: linear-gradient(to right, #7C3AED, #6D28D9);  
-            transform: translateY(-2px);  
-            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);  
-        }  
-          
-        .feature-btn {  
-            transition: all 0.3s;  
-            height: 80px;  
-            display: flex;  
-            flex-direction: column;  
-            justify-content: center;  
-            align-items: center;  
-            border-radius: 12px;  
-            font-size: 12px;  
-            line-height: 1.2;  
-        }  
-          
-        .feature-btn:hover {  
-            transform: translateY(-3px);  
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);  
-        }  
-          
-        .tab-button {  
-            transition: all 0.3s;  
-            padding: 12px 20px;  
-            border-radius: 8px;  
-            cursor: pointer;  
-        }  
-          
-        .tab-button.active {  
-            background: rgba(139, 92, 246, 0.2);  
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);  
-        }  
-          
-        .payment-method {  
-            transition: all 0.3s;  
-            border: 2px solid rgba(255, 255, 255, 0.1);  
-            border-radius: 12px;  
-            padding: 15px;  
-            cursor: pointer;  
-        }  
-          
-        .payment-method.active {  
-            border-color: #8B5CF6;  
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);  
-        }  
-          
-        .matrix-node {  
-            width: 50px;  
-            height: 50px;  
-            border-radius: 50%;  
-            display: flex;  
-            align-items: center;  
-            justify-content: center;  
-            background: linear-gradient(135deg, #8B5CF6, #7C3AED);  
-            color: white;  
-            font-weight: bold;  
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);  
-        }  
-          
-        .winning-flash {  
-            animation: winFlash 2s ease;  
-        }  
-          
-        @keyframes winFlash {  
-            0% { background-color: initial; }  
-            50% { background-color: rgba(34, 197, 94, 0.3); }  
-            100% { background-color: initial; }  
-        }  
-          
-        .loader {  
-            border: 3px solid rgba(255, 255, 255, 0.3);  
-            border-radius: 50%;  
-            border-top: 3px solid #8B5CF6;  
-            width: 25px;  
-            height: 25px;  
-            animation: spin 1s linear infinite;  
-        }  
-          
-        @keyframes spin {  
-            0% { transform: rotate(0deg); }  
-            100% { transform: rotate(360deg); }  
-        }  
-
-        .pin-input {  
-            letter-spacing: 8px;  
-            font-size: 24px;  
-            text-align: center;  
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAVIZ SWAPS - Token Swap & Earn</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
-
-        .connection-status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 15px;
+        
+        body {
+            background: linear-gradient(135deg, #3a0006 0%, #1a0020 50%, #000524 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-gold {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            color: #333;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-gold:hover {
+            background: linear-gradient(to right, #FFA500, #FF8C00);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
+        }
+        
+        .btn-purple {
+            background: linear-gradient(to right, #8B5CF6, #7C3AED);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .btn-purple:hover {
+            background: linear-gradient(to right, #7C3AED, #6D28D9);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .feature-btn {
+            transition: all 0.3s;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+        
+        .feature-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tab-button {
+            transition: all 0.3s;
+            padding: 12px 20px;
             border-radius: 8px;
-            z-index: 100;
-            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .tab-button.active {
+            background: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .payment-method {
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+        }
+        
+        .payment-method.active {
+            border-color: #8B5CF6;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .matrix-node {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
         }
         
-        .connection-status.connected {
-            background: rgba(34, 197, 94, 0.2);
-            border: 1px solid rgba(34, 197, 94, 0.5);
-            color: #22c55e;
+        .winning-flash {
+            animation: winFlash 2s ease;
         }
         
-        .connection-status.disconnected {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            color: #ef4444;
+        @keyframes winFlash {
+            0% { background-color: initial; }
+            50% { background-color: rgba(34, 197, 94, 0.3); }
+            100% { background-color: initial; }
         }
-    </style>  
-</head>  
-<body class="min-h-screen flex flex-col">  
-    <!-- Connection Status Indicator -->
-    <div id="connection-status" class="connection-status hidden">
-        <i id="connection-icon" class="fas fa-circle"></i>
-        <span id="connection-text">Checking connection...</span>
-    </div>
-  
-    <!-- Header -->  
-    <header class="sticky top-0 z-30 bg-gradient-to-r from-yellow-400 to-yellow-500 border-b border-yellow-300 shadow-md">  
-        <div class="container mx-auto px-4 py-2">  
-            <div class="flex items-center justify-between">  
-                <div class="flex items-center gap-3">  
-                    <img src="https://i.imgur.com/VbxvCK6.jpeg" alt="MAVIZ" class="h-10 w-10 rounded-full ring-2 ring-yellow-400/50 shadow-md">  
-                    <div class="text-center">  
-                        <h1 class="text-lg font-extrabold tracking-wide text-gray-900">MAVIZ SWAPS</h1>  
-                        <p class="text-xs text-gray-800">Token Swap & Earn</p>  
-                    </div>  
-                </div>  
-                <div class="flex items-center gap-3">  
-                    <button id="auth-btn" class="btn-purple px-4 py-2 text-sm rounded-full flex items-center">  
-                        <i class="fas fa-user mr-2"></i> <span id="auth-text">Sign Up</span>  
-                    </button>  
-                    <button class="btn-purple p-2 rounded-full">  
-                        <i class="fas fa-bars"></i>  
-                    </button>  
-                </div>  
-            </div>  
-            <p class="text-xs text-gray-800 mt-2 text-center">MAVIZ – P2P Escrow Swap, Games, Airdrop, Mining, Unlock Affiliate Rewards in USDT, Spin & Earn, Voting & more</p>  
-            <p id="demo-warning" class="text-xs text-orange-800 font-semibold mt-1 text-center bg-orange-100 py-1 rounded-md">⚠️ Demo mode: 3 free spins available</p>  
-        </div>  
-    </header>  
-  
-    <!-- Main Content -->  
-    <main class="flex-1 container mx-auto px-4 py-6">  
-        <!-- Dashboard View (shown when logged in) -->  
-        <div id="dashboard-view" class="hidden">  
-            <div class="flex justify-between items-center mb-6">  
-                <h1 class="text-2xl font-bold">Dashboard</h1>  
-                <div class="flex items-center gap-2">  
-                    <div class="flex items-center gap-2 glass-card px-4 py-2 rounded-full">  
-                        <i class="fas fa-wallet text-purple-400"></i>  
-                        <span id="wallet-balance">0.00 MVZx</span>  
-                    </div>  
-                    <button id="logout-btn" class="glass-card px-4 py-2 rounded-full text-sm hover:bg-white/10">  
-                        Logout  
-                    </button>  
-                </div>  
-            </div>  
-              
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">  
-                <div class="glass-card p-6 text-center">  
-                    <div class="text-3xl font-bold text-purple-500 mb-2" id="user-level">Bronze</div>  
-                    <p class="text-gray-400">Current Level</p>  
-                </div>  
-                  
-                <div class="glass-card p-6 text-center">  
-                    <div class="text-3xl font-bold text-green-500 mb-2" id="direct-referrals">0</div>  
-                    <p class="text-gray-400">Direct Referrals</p>  
-                </div>  
-                  
-                <div class="glass-card p-6 text-center">  
-                    <div class="text-3xl font-bold text-yellow-500 mb-2" id="total-team">0</div>  
-                    <p class="text-gray-400">Total Team</p>  
-                </div>  
-            </div>  
-              
-            <!-- Navigation Tabs -->  
-            <div class="flex gap-2 mb-6 glass-card p-2 rounded-xl">  
-                <div class="tab-button active" data-tab="buy">Buy MVZx</div>  
-                <div class="tab-button" data-tab="matrix">Matrix</div>  
-                <div class="tab-button" data-tab="wallet">Wallet</div>  
-                <div class="tab-button" data-tab="mining">Mining</div>  
-                <div class="tab-button" data-tab="spin">Spin & Earn</div>  
-            </div>  
-              
-            <!-- Tab Content -->  
-            <div id="tab-content">  
-                <!-- Buy MVZx Tab -->  
-                <div id="buy-tab" class="tab-panel">  
-                    <div class="glass-card p-6 mb-6">  
-                        <h2 class="text-xl font-semibold mb-4">Buy MVZx Tokens</h2>  
-                          
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">  
-                            <div class="payment-method active" data-method="card">  
-                                <i class="fas fa-credit-card text-2xl mb-2"></i>  
-                                <p class="text-sm">Credit/Debit Card</p>  
-                            </div>  
-                            <div class="payment-method" data-method="flutterwave">  
-                                <i class="fas fa-globe-africa text-2xl mb-2"></i>  
-                                <p class="text-sm">Flutterwave (NGN/USD)</p>  
-                            </div>  
-                            <div class="payment-method" data-method="usdt">  
-                                <i class="fas fa-coins text-2xl mb-2"></i>  
-                                <p class="text-sm">USDT (TRC20/ERC20)</p>  
-                            </div>  
-                            <div class="payment-method" data-method="manual">  
-                                <i class="fas fa-building text-2xl mb-2"></i>  
-                                <p class="text-sm">Manual Deposit</p>  
-                            </div>  
-                        </div>  
-                          
-                        <div class="mb-6">  
-                            <label class="block text-sm font-medium mb-2">Amount (USD)</label>  
-                            <input type="number" id="purchase-amount" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Enter amount">  
-                        </div>  
-                          
-                        <div id="usdt-details" class="hidden mb-4 glass-card p-4">  
-                            <p class="text-sm mb-2">Send USDT to this address:</p>  
-                            <div class="flex items-center justify-between bg-gray-800 p-2 rounded">  
-                                <span id="usdt-address" class="text-xs truncate">0x742d35Cc6634C0532925a3b844Bc454e4438f44e</span>  
-                                <button class="text-purple-400 ml-2" id="copy-usdt">  
-                                    <i class="fas fa-copy"></i>  
-                                </button>  
-                            </div>  
-                            <p class="text-xs text-yellow-400 mt-2">Your MVZx tokens will be credited after 3 network confirmations</p>  
-                        </div>  
-                          
-                        <div id="manual-details" class="hidden mb-4 glass-card p-4">  
-                            <p class="text-sm mb-2">Contact support for manual deposit instructions:</p>  
-                            <p class="text-xs text-yellow-400">Email: support@mavizswaps.com<br>WhatsApp: +1234567890</p>  
-                        </div>  
-                          
-                        <button id="purchase-btn" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold flex items-center justify-center">  
-                            <span>Buy MVZx with Credit Card</span>  
-                        </button>  
-                    </div>  
-                      
-                    <div class="glass-card p-6">  
-                        <h2 class="text-xl font-semibold mb-4">MVZx Token Information</h2>  
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
-                            <div>  
-                                <p class="text-sm text-gray-400">Current Price</p>  
-                                <p class="text-lg font-semibold">1 MVZx = $0.10</p>  
-                            </div>  
-                            <div>  
-                                <p class="text-sm text-gray-400">You will receive</p>  
-                                <p class="text-lg font-semibold" id="purchase-receive">0 MVZx</p>  
-                            </div>  
-                        </div>  
-                    </div>  
-                </div>  
-                  
-                <!-- Matrix Tab -->  
-                <div id="matrix-tab" class="tab-panel hidden">  
-                    <div class="glass-card p-6 mb-6">  
-                        <h2 class="text-xl font-semibold mb-4">Matrix Rewards</h2>  
-                        <div class="overflow-x-auto">  
-                            <table class="w-full">  
-                                <thead>  
-                                    <tr class="border-b border-gray-700">  
-                                        <th class="py-2 text-left">Level</th>  
-                                        <th class="py-2 text-right">Requirements</th>  
-                                        <th class="py-2 text-right">Reward</th>  
-                                        <th class="py-2 text-right">Status</th>  
-                                    </tr>  
-                                </thead>  
-                                <tbody id="rewards-table">  
-                                    <!-- Filled by JavaScript -->  
-                                </tbody>  
-                            </table>  
-                        </div>  
-                          
-                        <div class="mt-6 flex justify-end">  
-                            <button id="claim-rewards-btn" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold flex items-center justify-center disabled:opacity-50" disabled>  
-                                <span>Claim Rewards (0 MVZx)</span>  
-                            </button>  
-                        </div>  
-                    </div>  
-                      
-                    <div class="glass-card p-6">  
-                        <h2 class="text-xl font-semibold mb-4">Your Matrix Tree</h2>  
-                        <div class="flex justify-center">  
-                            <div class="matrix-node">You</div>  
-                        </div>  
-                        <div class="flex justify-center mt-4 gap-10" id="level-1">  
-                            <!-- Filled by JavaScript -->  
-                        </div>  
-                    </div>  
-                </div>  
-                  
-                <!-- Wallet Tab -->  
-                <div id="wallet-tab" class="tab-panel hidden">  
-                    <div class="glass-card p-6 mb-6">  
-                        <h2 class="text-xl font-semibold mb-4">Withdraw MVZx</h2>  
-                          
-                        <div class="space-y-4">  
-                            <div>  
-                                <label class="block text-sm font-medium mb-2">Amount to Withdraw (MVZx)</label>  
-                                <input type="number" id="withdraw-amount" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Enter amount">  
-                            </div>  
-                              
-                            <div>  
-                                <label class="block text-sm font-medium mb-2">Withdrawal Address</label>  
-                                <input type="text" id="withdraw-address" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Enter your wallet address">  
-                            </div>  
-                              
-                            <div>  
-                                <label class="block text-sm font-medium mb-2">Network</label>  
-                                <select id="withdraw-network" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none">  
-                                    <option value="TRC20">TRC20 (Tron)</option>  
-                                    <option value="ERC20">ERC20 (Ethereum)</option>  
-                                </select>  
-                            </div>  
-                              
-                            <div class="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded">  
-                                <p class="text-sm text-yellow-400">  
-                                    ⚠️ Withdrawal fee: 5 MVZx. Minimum withdrawal: 50 MVZx.   
-                                    Processing time: 24-48 hours.  
-                                </p>  
-                            </div>  
-                              
-                            <button id="withdraw-btn" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold flex items-center justify-center">  
-                                <span>Request Withdrawal</span>  
-                            </button>  
-                        </div>  
-                    </div>  
-                      
-                    <div class="glass-card p-6">  
-                        <h2 class="text-xl font-semibold mb-4">Transaction History</h2>  
-                        <div class="overflow-x-auto">  
-                            <table class="w-full" id="transaction-table">  
-                                <thead>  
-                                    <tr class="border-b border-gray-700">  
-                                        <th class="py-2 text-left">Date</th>  
-                                        <th class="py-2 text-left">Type</th>  
-                                        <th class="py-2 text-right">Amount</th>  
-                                        <th class="py-2 text-left">Status</th>  
-                                    </tr>  
-                                </thead>  
-                                <tbody>  
-                                    <!-- Filled by JavaScript -->  
-                                </tbody>  
-                            </table>  
-                        </div>  
-                    </div>  
-                </div>  
-                  
-                <!-- Other tabs would go here -->  
-            </div>  
-        </div>  
-  
-        <!-- Landing View (shown when not logged in) -->  
-        <div id="landing-view">  
-            <div class="glass-card rounded-2xl p-6 shadow-xl">  
-                <div class="text-center mb-6">  
-                    <h2 class="text-xl font-extrabold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500">INSTANT SPIN & EARN</h2>  
-                </div>  
-  
-                <!-- Status Bar -->  
-                <div class="glass-card flex items-center justify-between rounded-full px-5 py-3 mb-6">  
-                    <div class="flex items-center gap-2">  
-                        <i class="fas fa-crown text-yellow-400"></i>  
-                        <span class="bg-purple-600 px-3 py-1 rounded-full text-xs font-semibold">Bronze</span>  
-                    </div>  
-                    <div class="text-sm">Wins: <span class="font-semibold">0</span></div>  
-                    <div class="flex items-center gap-2 text-sm">  
-                        <i class="fas fa-wallet text-purple-400"></i>  
-                        <span>0.00 MVZx</span>  
-                    </div>  
-                </div>  
-  
-                <!-- Feature Buttons -->  
-                <div class="grid grid-cols-3 gap-4 mb-8">  
-                    <a href="#" class="feature-btn" style="background-color: #16a34a;">  
-                        <i class="fas fa-coins text-white text-xl mb-1"></i>  
-                        <span class="text-white text-center">MVZx<br>Buy & Earn</span>  
-                    </a>  
-                    <a href="#" class="feature-btn" style="background-color: #db2777;">  
-                        <i class="fas fa-gift text-white text-xl mb-1"></i>  
-                        <span class="text-white text-center">Airdrop</span>  
-                    </a>  
-                    <a href="#" class="feature-btn" style="background-color: #ca8a04;">  
-                        <i class="fas fa-microchip text-white text-xl mb-1"></i>  
-                        <span class="text-white text-center">Mining</span>  
-                    </a>  
-                    <a href="#" class="feature-btn" style="background-color: #2563eb;">  
-                        <i class="fas fa-building text-white text-xl mb-1"></i>  
-                        <span class="text-white text-center">Direct<br>Deposit</span>  
-                    </a>  
-                    <a href="#" class="feature-btn" style="background-color: #4338ca;">  
-                        <i class="fas fa-handshake text-white text-xl mb-1"></i>  
-                        <span class="text-white text-center">Escrow<br>P2P Trade</span>  
-                    </a>  
-                    <a href="#" class="feature-btn" style="background-color: #15803d;">  
-                        <i class="fas fa-vote-yea text-white text-xl mb-1"></i>  
-                        <span class="text-white text-center">Voting</span>  
-                    </a>  
-                </div>  
-  
-                <!-- Call to Action -->  
-                <div class="text-center mt-8">  
-                    <h3 class="text-lg font-semibold mb-4">Ready to start earning with MAVIZ?</h3>  
-                    <button id="cta-signup" class="btn-gold px-8 py-3 rounded-xl text-lg font-bold">  
-                        SIGN UP NOW  
-                    </button>  
-                    <p class="text-sm mt-4">Already have an account? <button id="cta-login" class="text-purple-400 hover:underline">Log In</button></p>  
-                </div>  
-            </div>  
-        </div>  
-    </main>  
-  
-    <!-- Footer -->  
-    <footer class="text-center py-4 text-sm text-white/70">  
-        &copy; 2023 MAVIZ. All rights reserved.  
-    </footer>  
-  
-    <!-- Auth Modal -->  
-    <div id="auth-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">  
-        <div class="bg-gray-900 rounded-xl w-11/12 max-w-md p-6">  
-            <h2 class="text-2xl font-bold mb-5 text-center" id="auth-modal-title">Create Account</h2>  
-            <form id="auth-form">  
-                <div class="space-y-4">  
-                    <input type="email" id="auth-email" placeholder="Email" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" required>  
-                    
-                    <!-- PIN fields for signup -->  
-                    <div id="signup-pin-fields">  
-                        <input type="password" id="auth-pin" placeholder="Create 4-digit PIN" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none pin-input" maxlength="4" inputmode="numeric" pattern="[0-9]*">  
-                        <input type="password" id="auth-confirm-pin" placeholder="Confirm 4-digit PIN" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none pin-input" maxlength="4" inputmode="numeric" pattern="[0-9]*">  
-                    </div>  
-                    
-                    <!-- PIN field for login -->  
-                    <div id="login-pin-field" class="hidden">  
-                        <input type="password" id="auth-login-pin" placeholder="Enter your 4-digit PIN" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none pin-input" maxlength="4" inputmode="numeric" pattern="[0-9]*">  
-                    </div>  
-                    
-                    <input type="text" id="auth-referral" placeholder="Referral Code (Optional)" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none">  
-                    <button type="submit" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold flex items-center justify-center">  
-                        <span id="auth-submit-text">Sign Up</span>  
-                    </button>  
-                </div>  
-            </form>  
-            <div class="mt-4 text-center">  
-                <p class="text-sm">  
-                    <span id="auth-switch-text">Already have an account?</span>   
-                    <button id="auth-switch-btn" class="text-purple-400 hover:underline ml-1">Login</button>  
-                </p>  
-            </div>  
-            <button id="close-auth-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white">  
-                <i class="fas fa-times text-xl"></i>  
-            </button>  
-        </div>  
-    </div>  
-  
-    <!-- Loading Overlay -->  
-    <div id="loading-overlay" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">  
-        <div class="bg-gray-900 rounded-xl w-11/12 max-w-md p-6 flex flex-col items-center">  
-            <div class="loader mb-4"></div>  
-            <p id="loading-text" class="text-lg">Processing...</p>  
-        </div>  
-    </div>  
-  
-    <!-- Success Modal -->  
-    <div id="success-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">  
-        <div class="bg-gray-900 rounded-xl w-11/12 max-w-md p-6 text-center">  
-            <i class="fas fa-check-circle text-green-500 text-5xl mb-4"></i>  
-            <h2 class="text-2xl font-bold mb-2" id="success-title">Success!</h2>  
-            <p id="success-message" class="mb-6">Your operation was completed successfully.</p>  
-            <button id="close-success-modal" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold">  
-                Continue  
-            </button>  
-        </div>  
-    </div>  
-  
-    <!-- Error Modal -->  
-    <div id="error-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">  
-        <div class="bg-gray-900 rounded-xl w-11/12 max-w-md p-6 text-center">  
-            <i class="fas fa-exclamation-circle text-red-500 text-5xl mb-4"></i>  
-            <h2 class="text-2xl font-bold mb-2">Error</h2>  
-            <p id="error-message" class="mb-6">An error occurred while processing your request.</p>  
-            <button id="close-error-modal" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold">  
-                Try Again  
-            </button>  
-        </div>  
-    </div>  
-  
-    <script>  
-        // API Base URL - Replace with your Render backend URL  
-        const API_BASE_URL = 'https://mavizweb.onrender.com';  
-          
-        // Global state  
-        let authState = {  
-            isLoggedIn: false,  
-            token: null,  
-            user: null  
-        };  
-          
-        let paymentState = {  
-            method: 'card'  
-        };
-
-        // Track backend connection status
-        let backendConnected = false;
-          
-        // DOM Elements  
-        const elements = {  
-            // Auth elements  
-            authBtn: document.getElementById('auth-btn'),  
-            authText: document.getElementById('auth-text'),  
-            demoWarning: document.getElementById('demo-warning'),  
-              
-            // View toggles  
-            dashboardView: document.getElementById('dashboard-view'),  
-            landingView: document.getElementById('landing-view'),  
-              
-            // Auth modal  
-            authModal: document.getElementById('auth-modal'),  
-            authForm: document.getElementById('auth-form'),  
-            authEmail: document.getElementById('auth-email'),  
-            authPin: document.getElementById('auth-pin'),  
-            authConfirmPin: document.getElementById('auth-confirm-pin'),  
-            authLoginPin: document.getElementById('auth-login-pin'),  
-            authReferral: document.getElementById('auth-referral'),  
-            authModalTitle: document.getElementById('auth-modal-title'),  
-            authSubmitText: document.getElementById('auth-submit-text'),  
-            authSwitchText: document.getElementById('auth-switch-text'),  
-            authSwitchBtn: document.getElementById('auth-switch-btn'),  
-            closeAuthModal: document.getElementById('close-auth-modal'),  
-            signupPinFields: document.getElementById('signup-pin-fields'),  
-            loginPinField: document.getElementById('login-pin-field'),  
-              
-            // Dashboard elements  
-            logoutBtn: document.getElementById('logout-btn'),  
-            walletBalance: document.getElementById('wallet-balance'),  
-            userLevel: document.getElementById('user-level'),  
-            directReferrals: document.getElementById('direct-referrals'),  
-            totalTeam: document.getElementById('total-team'),  
-              
-            // Tab system  
-            tabButtons: document.querySelectorAll('.tab-button'),  
-            tabPanels: document.querySelectorAll('.tab-panel'),  
-              
-            // Buy tab  
-            purchaseAmount: document.getElementById('purchase-amount'),  
-            purchaseReceive: document.getElementById('purchase-receive'),  
-            purchaseBtn: document.getElementById('purchase-btn'),  
-            paymentMethods: document.querySelectorAll('.payment-method'),  
-            usdtDetails: document.getElementById('usdt-details'),  
-            manualDetails: document.getElementById('manual-details'),  
-            usdtAddress: document.getElementById('usdt-address'),  
-            copyUsdt: document.getElementById('copy-usdt'),  
-              
-            // Matrix tab  
-            rewardsTable: document.getElementById('rewards-table'),  
-            claimRewardsBtn: document.getElementById('claim-rewards-btn'),  
-            level1: document.getElementById('level-1'),  
-              
-            // Wallet tab  
-            withdrawAmount: document.getElementById('withdraw-amount'),  
-            withdrawAddress: document.getElementById('withdraw-address'),  
-            withdrawNetwork: document.getElementById('withdraw-network'),  
-            withdrawBtn: document.getElementById('withdraw-btn'),  
-            transactionTable: document.getElementById('transaction-table'),  
-              
-            // Modals  
-            loadingOverlay: document.getElementById('loading-overlay'),  
-            loadingText: document.getElementById('loading-text'),  
-            successModal: document.getElementById('success-modal'),  
-            successTitle: document.getElementById('success-title'),  
-            successMessage: document.getElementById('success-message'),  
-            closeSuccessModal: document.getElementById('close-success-modal'),  
-            errorModal: document.getElementById('error-modal'),  
-            errorMessage: document.getElementById('error-message'),  
-            closeErrorModal: document.getElementById('close-error-modal'),  
-              
-            // Landing page CTA  
-            ctaSignup: document.getElementById('cta-signup'),  
-            ctaLogin: document.getElementById('cta-login'),
-
-            // Connection status
-            connectionStatus: document.getElementById('connection-status'),
-            connectionIcon: document.getElementById('connection-icon'),
-            connectionText: document.getElementById('connection-text')
-        };  
-          
-        // Initialize the application  
-        document.addEventListener('DOMContentLoaded', function() {  
-            initApp();  
-            setupEventListeners();  
-            testBackendConnection();  
-        });  
-          
-        function initApp() {  
-            // Check if user is logged in  
-            const token = localStorage.getItem('mvzx_token');  
-            const user = localStorage.getItem('mvzx_user');  
-              
-            if (token && user) {  
-                authState.isLoggedIn = true;  
-                authState.token = token;  
-                authState.user = JSON.parse(user);  
-                  
-                updateUIForAuthState();  
-                loadUserData();  
-            }  
-        }  
-          
-        function setupEventListeners() {  
-            // Auth button  
-            elements.authBtn.addEventListener('click', function() {  
-                if (authState.isLoggedIn) {  
-                    // Already logged in, do nothing or show profile  
-                } else {  
-                    showAuthModal('signup');  
-                }  
-            });  
-              
-            // Logout button  
-            elements.logoutBtn.addEventListener('click', logout);  
-              
-            // Auth form submission  
-            elements.authForm.addEventListener('submit', handleAuthSubmit);  
-              
-            // Auth modal switch  
-            elements.authSwitchBtn.addEventListener('click', function() {  
-                const isLogin = elements.authModalTitle.textContent === 'Login';  
-                showAuthModal(isLogin ? 'signup' : 'login');  
-            });  
-              
-            // Close auth modal  
-            elements.closeAuthModal.addEventListener('click', function() {  
-                elements.authModal.classList.add('hidden');  
-            });  
-              
-            // Tab buttons  
-            elements.tabButtons.forEach(button => {  
-                button.addEventListener('click', function() {  
-                    const tab = this.getAttribute('data-tab');  
-                    switchTab(tab);  
-                });  
-            });  
-              
-            // Payment methods  
-            elements.paymentMethods.forEach(method => {  
-                method.addEventListener('click', function() {  
-                    elements.paymentMethods.forEach(m => m.classList.remove('active'));  
-                    this.classList.add('active');  
-                      
-                    paymentState.method = this.getAttribute('data-method');  
-                    updatePaymentUI();  
-                });  
-            });  
-              
-            // Purchase amount input  
-            elements.purchaseAmount.addEventListener('input', function() {  
-                const amount = parseFloat(this.value) || 0;  
-                const mvzxAmount = amount / 0.10; // 1 MVZx = $0.10  
-                elements.purchaseReceive.textContent = `${mvzxAmount.toFixed(2)} MVZx`;  
-            });  
-              
-            // Purchase button  
-            elements.purchaseBtn.addEventListener('click', handlePurchase);  
-              
-            // Copy USDT address  
-            elements.copyUsdt.addEventListener('click', function() {  
-                navigator.clipboard.writeText(elements.usdtAddress.textContent);  
-                showSuccess('Copied!', 'USDT address copied to clipboard');  
-            });  
-              
-            // Withdraw button  
-            elements.withdrawBtn.addEventListener('click', handleWithdraw);  
-              
-            // Close modals  
-            elements.closeSuccessModal.addEventListener('click', function() {  
-                elements.successModal.classList.add('hidden');  
-            });  
-              
-            elements.closeErrorModal.addEventListener('click', function() {  
-                elements.errorModal.classList.add('hidden');  
-            });  
-              
-            // Landing page CTAs  
-            elements.ctaSignup.addEventListener('click', function() {  
-                showAuthModal('signup');  
-            });  
-              
-            elements.ctaLogin.addEventListener('click', function() {  
-                showAuthModal('login');  
-            });  
-        }  
-          
-        function showAuthModal(mode) {  
-            elements.authModal.classList.remove('hidden');  
-              
-            if (mode === 'signup') {  
-                elements.authModalTitle.textContent = 'Create Account';  
-                elements.authSubmitText.textContent = 'Sign Up';  
-                elements.authSwitchText.textContent = 'Already have an account?';  
-                elements.authSwitchBtn.textContent = 'Login';  
-                elements.signupPinFields.style.display = 'block';  
-                elements.loginPinField.classList.add('hidden');  
-            } else {  
-                elements.authModalTitle.textContent = 'Login';  
-                elements.authSubmitText.textContent = 'Login';  
-                elements.authSwitchText.textContent = "Don't have an account?";  
-                elements.authSwitchBtn.textContent = 'Sign Up';  
-                elements.signupPinFields.style.display = 'none';  
-                elements.loginPinField.classList.remove('hidden');  
-            }  
-        }  
-          
-        // Authentication functions - Frontend JavaScript  
-        async function handleAuthSubmit(e) {  
-            e.preventDefault();  
-              
-            const isLogin = elements.authModalTitle.textContent === 'Login';  
-            const email = elements.authEmail.value;  
-              
-            if (isLogin) {  
-                const pin = elements.authLoginPin.value;  
-                  
-                if (!validatePIN(pin)) {  
-                    showError('Invalid PIN', 'PIN must be 4 digits');  
-                    return;  
-                }  
-                  
-                showLoading('Logging in...');  
-                  
-                try {  
-                    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {  
-                        method: 'POST',  
-                        headers: {  
-                            'Content-Type': 'application/json'  
-                        },  
-                        body: JSON.stringify({ email, pin })  
-                    });  
-                      
-                    // First check if response is JSON  
-                    const contentType = response.headers.get('content-type');  
-                    if (!contentType || !contentType.includes('application/json')) {  
-                        // Try alternative endpoint if the first one fails
-                        await tryAlternativeAuthEndpoint('login', { email, pin });
-                        return;
-                    }  
-                      
-                    const data = await response.json();  
-                      
-                    if (data.success) {  
-                        // Save auth data  
-                        authState.isLoggedIn = true;  
-                        authState.token = data.token;  
-                        authState.user = data.user;  
-                          
-                        localStorage.setItem('mvzx_token', data.token);  
-                        localStorage.setItem('mvzx_user', JSON.stringify(data.user));  
-                          
-                        hideLoading();  
-                        elements.authModal.classList.add('hidden');  
-                        updateUIForAuthState();  
-                        loadUserData();  
-                          
-                        showSuccess('Success!', 'You have successfully logged in.');  
-                    } else {  
-                        throw new Error(data.error || 'Login failed');  
-                    }  
-                } catch (error) {  
-                    hideLoading();  
-                    showError('Login Error', error.message);  
-                }  
-            } else {  
-                // Signup handling  
-                const pin = elements.authPin.value;  
-                const confirmPin = elements.authConfirmPin.value;  
-                const referral = elements.authReferral.value;  
-                  
-                if (!validatePIN(pin)) {  
-                    showError('Invalid PIN', 'PIN must be 4 digits');  
-                    return;  
-                }  
-                  
-                if (pin !== confirmPin) {  
-                    showError('PIN Mismatch', 'PINs do not match');  
-                    return;  
-                }  
-                  
-                showLoading('Creating account...');  
-                  
-                try {  
-                    const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {  
-                        method: 'POST',  
-                        headers: {  
-                            'Content-Type': 'application/json'  
-                        },  
-                        body: JSON.stringify({  
-                            email,  
-                            pin,  
-                            referralCode: referral || undefined  
-                        })  
-                    });  
-                      
-                    // First check if response is JSON  
-                    const contentType = response.headers.get('content-type');  
-                    if (!contentType || !contentType.includes('application/json')) {  
-                        // Try alternative endpoint if the first one fails
-                        await tryAlternativeAuthEndpoint('signup', { email, pin, referralCode: referral || undefined });
-                        return;
-                    }  
-                      
-                    const data = await response.json();  
-                      
-                    if (data.success) {  
-                        // Save auth data  
-                        authState.isLoggedIn = true;  
-                        authState.token = data.token;  
-                        authState.user = data.user;  
-                          
-                        localStorage.setItem('mvzx_token', data.token);  
-                        localStorage.setItem('mvzx_user', JSON.stringify(data.user));  
-                        localStorage.setItem('mvzx_wallet', data.walletAddress);  
-                          
-                        hideLoading();  
-                        elements.authModal.classList.add('hidden');  
-                        updateUIForAuthState();  
-                        loadUserData();  
-                          
-                        showSuccess('Account Created!',   
-                            `Your account has been created successfully. Your wallet address is: ${data.walletAddress}`);  
-                    } else {  
-                        throw new Error(data.error || 'Registration failed');  
-                    }  
-                } catch (error) {  
-                    hideLoading();  
-                    showError('Registration Error', error.message);  
-                }  
-            }  
+        
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #8B5CF6;
+            width: 25px;
+            height: 25px;
+            animation: spin 1s linear infinite;
         }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="sticky top-0 z-30 bg-gradient-to-r from-yellow-400 to-yellow-500 border-b border-yellow-300 shadow-md">
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://i.imgur.com/VbxvCK6.jpeg" alt="MAVIZ" class="h-10 w-10 rounded-full ring-2 ring-yellow-400/50 shadow-md">
+                    <div class="text-center">
+                        <h1 class="text-lg font-extrabold tracking-wide text-gray-900">MAVIZ SWAPS</h1>
+                        <p class="text-xs text-gray-800">Token Swap & Earn</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="auth-btn" class="btn-purple px-4 py-2 text-sm rounded-full flex items-center">
+                        <i class="fas fa-user mr-2"></i> <span id="auth-text">Sign Up</span>
+                    </button>
+                    <button class="btn-purple p-2 rounded-full">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            <p class="text-xs text-gray-800 mt-2 text-center">MAVIZ – P2P Escrow Swap, Games, Airdrop, Mining, Unlock Affiliate Rewards in USDT, Spin & Earn, Voting & more</p>
+            <p id="demo-warning" class="text-xs text-orange-800 font-semibold mt-1 text-center bg-orange-100 py-1 rounded-md">⚠️ Demo mode: 3 free spins available</p>
+        </div>
+    </header>
 
-        // Try alternative authentication endpoints
-        async function tryAlternativeAuthEndpoint(action, data) {
-            try {
-                // Try without /api/ prefix
-                const alternativeUrl = `${API_BASE_URL}/${action === 'login' ? 'auth/login' : 'auth/signup'}`;
-                const response = await fetch(alternativeUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const responseData = await response.json();
+    <!-- Main Content -->
+    <main class="flex-1 container mx-auto px-4 py-6">
+        <!-- Dashboard View (shown when logged in) -->
+        <div id="dashboard-view" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Dashboard</h1>
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 glass-card px-4 py-2 rounded-full">
+                        <i class="fas fa-wallet text-purple-400"></i>
+                        <span id="wallet-balance">0.00 MVZx</span>
+                    </div>
+                    <button id="logout-btn" class="glass-card px-4 py-2 rounded-full text-sm hover:bg-white/10">
+                        Logout
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card p-6 text-center">
+                    <div class="text-3xl font-bold text-purple-500 mb-2" id="user-level">Bronze</div>
+                    <p class="text-gray-400">Current Level</p>
+                </div>
                 
-                if (responseData.success) {
-                    // Save auth data  
-                    authState.isLoggedIn = true;  
-                    authState.token = responseData.token;  
-                    authState.user = responseData.user;  
-                      
-                    localStorage.setItem('mvzx_token', responseData.token);  
-                    localStorage.setItem('mvzx_user', JSON.stringify(responseData.user));  
+                <div class="glass-card p-6 text-center">
+                    <div class="text-3xl font-bold text-green-500 mb-2" id="direct-referrals">0</div>
+                    <p class="text-gray-400">Direct Referrals</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="text-3xl font-bold text-yellow-500 mb-2" id="total-team">0</div>
+                    <p class="text-gray-400">Total Team</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <div class="flex gap-2 mb-6 glass-card p-2 rounded-xl">
+                <div class="tab-button active" data-tab="buy">Buy MVZx</div>
+                <div class="tab-button" data-tab="matrix">Matrix</div>
+                <div class="tab-button" data-tab="wallet">Wallet</div>
+                <div class="tab-button" data-tab="mining">Mining</div>
+                <div class="tab-button" data-tab="spin">Spin & Earn</div>
+            </div>
+            
+            <!-- Tab Content -->
+            <div id="tab-content">
+                <!-- Buy MVZx Tab -->
+                <div id="buy-tab" class="tab-panel">
+                    <div class="glass-card p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Buy MVZx Tokens</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                            <div class="payment-method active" data-method="card">
+                                <i class="fas fa-credit-card text-2xl mb-2"></i>
+                                <p class="text-sm">Credit/Debit Card</p>
+                            </div>
+                            <div class="payment-method" data-method="flutterwave">
+                                <i class="fas fa-globe-africa text-2xl mb-2"></i>
+                                <p class="text-sm">Flutterwave (NGN/USD)</p>
+                            </div>
+                            <div class="payment-method" data-method="usdt">
+                                <i class="fas fa-coins text-2xl mb-2"></i>
+                                <p class="text-sm">USDT (TRC20/ERC20)</p>
+                            </div>
+                            <div class="payment-method" data-method="manual">
+                                <i class="fas fa-building text-2xl mb-2"></i>
+                                <p class="text-sm">Manual Deposit</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">Amount (USD)</label>
+                            <input type="number" id="purchase-amount" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Enter amount">
+                        </div>
+                        
+                        <div id="usdt-details" class="hidden mb-4 glass-card p-4">
+                            <p class="text-sm mb-2">Send USDT to this address:</p>
+                            <div class="flex items-center justify-between bg-gray-800 p-2 rounded">
+                                <span id="usdt-address" class="text-xs truncate">0x742d35Cc6634C0532925a3b844Bc454e4438f44e</span>
+                                <button class="text-purple-400 ml-2" id="copy-usdt">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <p class="text-xs text-yellow-400 mt-2">Your MVZx tokens will be credited after 3 network confirmations</p>
+                        </div>
+                        
+                        <div id="manual-details" class="hidden mb-4 glass-card p-4">
+                            <p class="text-sm mb-2">Contact support for manual deposit instructions:</p>
+                            <p class="text-xs text-yellow-400">Email: support@mavizswaps.com<br>WhatsApp: +1234567890</p>
+                        </div>
+                        
+                        <button id="purchase-btn" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold flex items-center justify-center">
+                            <span>Buy MVZx with Credit Card</span>
+                        </button>
+                    </div>
                     
-                    if (action === 'signup') {
-                        localStorage.setItem('mvzx_wallet', responseData.walletAddress);  
-                    }
-                      
-                    hideLoading();  
-                    elements.authModal.classList.add('hidden');  
-                    updateUIForAuthState();  
-                    loadUserData();  
-                      
-                    showSuccess('Success!', action === 'login' 
-                        ? 'You have successfully logged in.' 
-                        : `Your account has been created successfully. Your wallet address is: ${responseData.walletAddress}`);
+                    <div class="glass-card p-6">
+                        <h2 class="text-xl font-semibold mb-4">MVZx Token Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-400">Current Price</p>
+                                <p class="text-lg font-semibold">1 MVZx = $0.10</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">You will receive</p>
+                                <p class="text-lg font-semibold" id="purchase-receive">0 MVZx</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Matrix Tab -->
+                <div id="matrix-tab" class="tab-panel hidden">
+                    <div class="glass-card p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Matrix Rewards</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-700">
+                                        <th class="py-2 text-left">Level</th>
+                                        <th class="py-2 text-right">Requirements</th>
+                                        <th class="py-2 text-right">Reward</th>
+                                        <th class="py-2 text-right">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rewards-table">
+                                    <!-- Filled by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-end">
+                            <button id="claim-rewards-btn" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold flex items-center justify-center disabled:opacity-50" disabled>
+                                <span>Claim Rewards (0 MVZx)</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card p-6">
+                        <h2 class="text-xl font-semibold mb-4">Your Matrix Tree</h2>
+                        <div class="flex justify-center">
+                            <div class="matrix-node">You</div>
+                        </div>
+                        <div class="flex justify-center mt-4 gap-10" id="level-1">
+                            <!-- Filled by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wallet Tab -->
+                <div id="wallet-tab" class="tab-panel hidden">
+                    <div class="glass-card p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Withdraw MVZx</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Amount to Withdraw (MVZx)</label>
+                                <input type="number" id="withdraw-amount" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Enter amount">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Withdrawal Address</label>
+                                <input type="text" id="withdraw-address" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Enter your wallet address">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Network</label>
+                                <select id="withdraw-network" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                                    <option value="TRC20">TRC20 (Tron)</option>
+                                    <option value="ERC20">ERC20 (Ethereum)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded">
+                                <p class="text-sm text-yellow-400">
+                                    ⚠️ Withdrawal fee: 5 MVZx. Minimum withdrawal: 50 MVZx. 
+                                    Processing time: 24-48 hours.
+                                </p>
+                            </div>
+                            
+                            <button id="withdraw-btn" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold flex items-center justify-center">
+                                <span>Request Withdrawal</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card p-6">
+                        <h2 class="text-xl font-semibold mb-4">Transaction History</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full" id="transaction-table">
+                                <thead>
+                                    <tr class="border-b border-gray-700">
+                                        <th class="py-2 text-left">Date</th>
+                                        <th class="py-2 text-left">Type</th>
+                                        <th class="py-2 text-right">Amount</th>
+                                        <th class="py-2 text-left">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filled by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Other tabs would go here -->
+            </div>
+        </div>
+
+        <!-- Landing View (shown when not logged in) -->
+        <div id="landing-view">
+            <div class="glass-card rounded-2xl p-6 shadow-xl">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-extrabold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500">INSTANT SPIN & EARN</h2>
+                </div>
+
+                <!-- Status Bar -->
+                <div class="glass-card flex items-center justify-between rounded-full px-5 py-3 mb-6">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-crown text-yellow-400"></i>
+                        <span class="bg-purple-600 px-3 py-1 rounded-full text-xs font-semibold">Bronze</span>
+                    </div>
+                    <div class="text-sm">Wins: <span class="font-semibold">0</span></div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <i class="fas fa-wallet text-purple-400"></i>
+                        <span>0.00 MVZx</span>
+                    </div>
+                </div>
+
+                <!-- Feature Buttons -->
+                <div class="grid grid-cols-3 gap-4 mb-8">
+                    <div class="feature-btn" style="background-color: #16a34a;">
+                        <i class="fas fa-coins text-white text-xl mb-1"></i>
+                        <span class="text-white text-center">MVZx<br>Buy & Earn</span>
+                    </div>
+                    <div class="feature-btn" style="background-color: #db2777;">
+                        <i class="fas fa-gift text-white text-xl mb-1"></i>
+                        <span class="text-white text-center">Airdrop</span>
+                    </div>
+                    <div class="feature-btn" style="background-color: #ca8a04;">
+                        <i class="fas fa-microchip text-white text-xl mb-1"></i>
+                        <span class="text-white text-center">Mining</span>
+                    </div>
+                    <div class="feature-btn" style="background-color: #2563eb;">
+                        <i class="fas fa-building text-white text-xl mb-1"></i>
+                        <span class="text-white text-center">Direct<br>Deposit</span>
+                    </div>
+                    <div class="feature-btn" style="background-color: #4338ca;">
+                        <i class="fas fa-handshake text-white text-xl mb-1"></i>
+                        <span class="text-white text-center">Escrow<br>P2P Trade</span>
+                    </div>
+                    <div class="feature-btn" style="background-color: #15803d;">
+                        <i class="fas fa-vote-yea text-white text-xl mb-1"></i>
+                        <span class="text-white text-center">Voting</span>
+                    </div>
+                </div>
+
+                <!-- Call to Action -->
+                <div class="text-center mt-8">
+                    <h3 class="text-lg font-semibold mb-4">Ready to start earning with MAVIZ?</h3>
+                    <button id="cta-signup" class="btn-gold px-8 py-3 rounded-xl text-lg font-bold">
+                        SIGN UP NOW
+                    </button>
+                    <p class="text-sm mt-4">Already have an account? <button id="cta-login" class="text-purple-400 hover:underline">Log In</button></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-sm text-white/70">
+        &copy; 2023 MAVIZ. All rights reserved.
+    </footer>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-900 rounded-xl w-11/12 max-w-md p-6">
+            <h2 class="text-2xl font-bold mb-5 text-center" id="auth-modal-title">Create Account</h2>
+            <form id="auth-form">
+                <div class="space-y-4">
+                    <input type="email" id="auth-email" placeholder="Email" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" required>
+                    
+                    <div id="signup-fields" class="space-y-4">
+                        <input type="password" id="auth-pin" placeholder="Create 4-digit PIN" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" required pattern="[0-9]{4}" maxlength="4">
+                        <input type="password" id="auth-confirm-pin" placeholder="Confirm 4-digit PIN" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" required pattern="[0-9]{4}" maxlength="4">
+                        <input type="text" id="auth-referral" placeholder="Referral Code (Optional)" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                    </div>
+                    
+                    <div id="login-field" class="hidden">
+                        <input type="password" id="auth-login-pin" placeholder="Enter your 4-digit PIN" class="w-full p-3.5 bg-gray-800 rounded-lg border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none" required pattern="[0-9]{4}" maxlength="4">
+                    </div>
+                    
+                    <button type="submit" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold flex items-center justify-center">
+                        <span id="auth-submit-text">Sign Up</span>
+                    </button>
+                </div>
+            </form>
+            <div class="mt-4 text-center">
+                <p class="text-sm">
+                    <span id="auth-switch-text">Already have an account?</span> 
+                    <button id="auth-switch-btn" class="text-purple-400 hover:underline ml-1">Login</button>
+                </p>
+            </div>
+            <button id="close-auth-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-900 rounded-xl w-11/12 max-w-md p-6 flex flex-col items-center">
+            <div class="loader mb-4"></div>
+            <p id="loading-text" class="text-lg">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-900 rounded-xl w-11/12 max-w-md p-6 text-center">
+            <i class="fas fa-check-circle text-green-500 text-5xl mb-4"></i>
+            <h2 class="text-2xl font-bold mb-2" id="success-title">Success!</h2>
+            <p id="success-message" class="mb-6">Your operation was completed successfully.</p>
+            <button id="close-success-modal" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-900 rounded-xl w-11/12 max-w-md p-6 text-center">
+            <i class="fas fa-exclamation-circle text-red-500 text-5xl mb-4"></i>
+            <h2 class="text-2xl font-bold mb-2">Error</h2>
+            <p id="error-message" class="mb-6">An error occurred while processing your request.</p>
+            <button id="close-error-modal" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold">
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL - Replace with your Render backend URL
+        const API_BASE_URL = 'https://mavizweb.onrender.com';
+        
+        // Global state
+        let authState = {
+            isLoggedIn: false,
+            token: null,
+            user: null
+        };
+        
+        let paymentState = {
+            method: 'card'
+        };
+        
+        // DOM Elements
+        const elements = {
+            // Auth elements
+            authBtn: document.getElementById('auth-btn'),
+            authText: document.getElementById('auth-text'),
+            demoWarning: document.getElementById('demo-warning'),
+            
+            // View toggles
+            dashboardView: document.getElementById('dashboard-view'),
+            landingView: document.getElementById('landing-view'),
+            
+            // Auth modal
+            authModal: document.getElementById('auth-modal'),
+            authForm: document.getElementById('auth-form'),
+            authEmail: document.getElementById('auth-email'),
+            authPassword: document.getElementById('auth-password'),
+            authReferral: document.getElementById('auth-referral'),
+            authModalTitle: document.getElementById('auth-modal-title'),
+            authSubmitText: document.getElementById('auth-submit-text'),
+            authSwitchText: document.getElementById('auth-switch-text'),
+            authSwitchBtn: document.getElementById('auth-switch-btn'),
+            closeAuthModal: document.getElementById('close-auth-modal'),
+            authPin: document.getElementById('auth-pin'),
+            authConfirmPin: document.getElementById('auth-confirm-pin'),
+            authLoginPin: document.getElementById('auth-login-pin'),
+            signupFields: document.getElementById('signup-fields'),
+            loginField: document.getElementById('login-field'),
+            
+            // Dashboard elements
+            logoutBtn: document.getElementById('logout-btn'),
+            walletBalance: document.getElementById('wallet-balance'),
+            userLevel: document.getElementById('user-level'),
+            directReferrals: document.getElementById('direct-referrals'),
+            totalTeam: document.getElementById('total-team'),
+            
+            // Tab system
+            tabButtons: document.querySelectorAll('.tab-button'),
+            tabPanels: document.querySelectorAll('.tab-panel'),
+            
+            // Buy tab
+            purchaseAmount: document.getElementById('purchase-amount'),
+            purchaseReceive: document.getElementById('purchase-receive'),
+            purchaseBtn: document.getElementById('purchase-btn'),
+            paymentMethods: document.querySelectorAll('.payment-method'),
+            usdtDetails: document.getElementById('usdt-details'),
+            manualDetails: document.getElementById('manual-details'),
+            usdtAddress: document.getElementById('usdt-address'),
+            copyUsdt: document.getElementById('copy-usdt'),
+            
+            // Matrix tab
+            rewardsTable: document.getElementById('rewards-table'),
+            claimRewardsBtn: document.getElementById('claim-rewards-btn'),
+            level1: document.getElementById('level-1'),
+            
+            // Wallet tab
+            withdrawAmount: document.getElementById('withdraw-amount'),
+            withdrawAddress: document.getElementById('withdraw-address'),
+            withdrawNetwork: document.getElementById('withdraw-network'),
+            withdrawBtn: document.getElementById('withdraw-btn'),
+            transactionTable: document.getElementById('transaction-table'),
+            
+            // Modals
+            loadingOverlay: document.getElementById('loading-overlay'),
+            loadingText: document.getElementById('loading-text'),
+            successModal: document.getElementById('success-modal'),
+            successTitle: document.getElementById('success-title'),
+            successMessage: document.getElementById('success-message'),
+            closeSuccessModal: document.getElementById('close-success-modal'),
+            errorModal: document.getElementById('error-modal'),
+            errorMessage: document.getElementById('error-message'),
+            closeErrorModal: document.getElementById('close-error-modal'),
+            
+            // Landing page CTA
+            ctaSignup: document.getElementById('cta-signup'),
+            ctaLogin: document.getElementById('cta-login')
+        };
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+            setupEventListeners();
+        });
+        
+        function initApp() {
+            // Check if user is logged in
+            const token = localStorage.getItem('mvzx_token');
+            const user = localStorage.getItem('mvzx_user');
+            
+            if (token && user) {
+                authState.isLoggedIn = true;
+                authState.token = token;
+                authState.user = JSON.parse(user);
+                
+                updateUIForAuthState();
+                loadUserData();
+            }
+            
+            // Test backend connection
+            testBackendConnection();
+        }
+        
+        function setupEventListeners() {
+            // Auth button
+            elements.authBtn.addEventListener('click', function() {
+                if (authState.isLoggedIn) {
+                    // Already logged in, show dashboard
                 } else {
-                    throw new Error(responseData.error || `${action} failed`);
+                    showAuthModal('signup');
+                }
+            });
+            
+            // Logout button
+            elements.logoutBtn.addEventListener('click', logout);
+            
+            // Auth form submission
+            elements.authForm.addEventListener('submit', handleAuthSubmit);
+            
+            // Auth modal switch
+            elements.authSwitchBtn.addEventListener('click', function() {
+                const isLogin = elements.authModalTitle.textContent === 'Login';
+                showAuthModal(isLogin ? 'signup' : 'login');
+            });
+            
+            // Close auth modal
+            elements.closeAuthModal.addEventListener('click', function() {
+                elements.authModal.classList.add('hidden');
+            });
+            
+            // Tab buttons
+            elements.tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    switchTab(tab);
+                });
+            });
+            
+            // Payment methods
+            elements.paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    elements.paymentMethods.forEach(m => m.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    paymentState.method = this.getAttribute('data-method');
+                    updatePaymentUI();
+                });
+            });
+            
+            // Purchase amount input
+            elements.purchaseAmount.addEventListener('input', function() {
+                const amount = parseFloat(this.value) || 0;
+                const mvzxAmount = amount / 0.10; // 1 MVZx = $0.10
+                elements.purchaseReceive.textContent = `${mvzxAmount.toFixed(2)} MVZx`;
+            });
+            
+            // Purchase button
+            elements.purchaseBtn.addEventListener('click', handlePurchase);
+            
+            // Copy USDT address
+            elements.copyUsdt.addEventListener('click', function() {
+                navigator.clipboard.writeText(elements.usdtAddress.textContent);
+                showSuccess('Copied!', 'USDT address copied to clipboard');
+            });
+            
+            // Withdraw button
+            elements.withdrawBtn.addEventListener('click', handleWithdraw);
+            
+            // Close modals
+            elements.closeSuccessModal.addEventListener('click', function() {
+                elements.successModal.classList.add('hidden');
+            });
+            
+            elements.closeErrorModal.addEventListener('click', function() {
+                elements.errorModal.classList.add('hidden');
+            });
+            
+            // Landing page CTAs
+            elements.ctaSignup.addEventListener('click', function() {
+                showAuthModal('signup');
+            });
+            
+            elements.ctaLogin.addEventListener('click', function() {
+                showAuthModal('login');
+            });
+        }
+        
+        function showAuthModal(mode) {
+            elements.authModal.classList.remove('hidden');
+            
+            if (mode === 'signup') {
+                elements.authModalTitle.textContent = 'Create Account';
+                elements.authSubmitText.textContent = 'Sign Up';
+                elements.authSwitchText.textContent = 'Already have an account?';
+                elements.authSwitchBtn.textContent = 'Login';
+                elements.signupFields.classList.remove('hidden');
+                elements.loginField.classList.add('hidden');
+            } else {
+                elements.authModalTitle.textContent = 'Login';
+                elements.authSubmitText.textContent = 'Login';
+                elements.authSwitchText.textContent = "Don't have an account?";
+                elements.authSwitchBtn.textContent = 'Sign Up';
+                elements.signupFields.classList.add('hidden');
+                elements.loginField.classList.remove('hidden');
+            }
+        }
+        
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            
+            const isLogin = elements.authModalTitle.textContent === 'Login';
+            const email = elements.authEmail.value;
+            
+            if (isLogin) {
+                const pin = elements.authLoginPin.value;
+                
+                if (!validatePIN(pin)) {
+                    showError('Invalid PIN', 'PIN must be 4 digits');
+                    return;
+                }
+                
+                showLoading('Logging in...');
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, pin })
+                    });
+                    
+                    // First check if response is JSON
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        const text = await response.text();
+                        throw new Error(`Server returned HTML instead of JSON. Status: ${response.status}. Response: ${text.substring(0, 100)}...`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Save auth data
+                        authState.isLoggedIn = true;
+                        authState.token = data.token;
+                        authState.user = data.user;
+                        
+                        localStorage.setItem('mvzx_token', data.token);
+                        localStorage.setItem('mvzx_user', JSON.stringify(data.user));
+                        
+                        hideLoading();
+                        elements.authModal.classList.add('hidden');
+                        updateUIForAuthState();
+                        loadUserData();
+                        
+                        showSuccess('Success!', 'You have successfully logged in.');
+                    } else {
+                        throw new Error(data.error || 'Login failed');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showError('Login Error', error.message);
+                }
+            } else {
+                // Signup handling
+                const pin = elements.authPin.value;
+                const confirmPin = elements.authConfirmPin.value;
+                const referral = elements.authReferral.value;
+                
+                if (!validatePIN(pin)) {
+                    showError('Invalid PIN', 'PIN must be 4 digits');
+                    return;
+                }
+                
+                if (pin !== confirmPin) {
+                    showError('PIN Mismatch', 'PINs do not match');
+                    return;
+                }
+                
+                showLoading('Creating account...');
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email,
+                            pin,
+                            referralCode: referral || undefined
+                        })
+                    });
+                    
+                    // First check if response is JSON
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        const text = await response.text();
+                        throw new Error(`Server returned HTML instead of JSON. Status: ${response.status}. Response: ${text.substring(0, 100)}...`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Save auth data
+                        authState.isLoggedIn = true;
+                        authState.token = data.token;
+                        authState.user = data.user;
+                        
+                        localStorage.setItem('mvzx_token', data.token);
+                        localStorage.setItem('mvzx_user', JSON.stringify(data.user));
+                        localStorage.setItem('mvzx_wallet', data.walletAddress);
+                        
+                        hideLoading();
+                        elements.authModal.classList.add('hidden');
+                        updateUIForAuthState();
+                        loadUserData();
+                        
+                        showSuccess('Account Created!', 
+                            `Your account has been created successfully. Your wallet address is: ${data.walletAddress}`);
+                    } else {
+                        throw new Error(data.error || 'Registration failed');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showError('Registration Error', error.message);
+                }
+            }
+        }
+        
+        function logout() {
+            authState.isLoggedIn = false;
+            authState.token = null;
+            authState.user = null;
+            
+            localStorage.removeItem('mvzx_token');
+            localStorage.removeItem('mvzx_user');
+            
+            updateUIForAuthState();
+        }
+        
+        function updateUIForAuthState() {
+            if (authState.isLoggedIn) {
+                elements.authText.textContent = 'Dashboard';
+                elements.demoWarning.classList.add('hidden');
+                elements.landingView.classList.add('hidden');
+                elements.dashboardView.classList.remove('hidden');
+            } else {
+                elements.authText.textContent = 'Sign Up';
+                elements.demoWarning.classList.remove('hidden');
+                elements.landingView.classList.remove('hidden');
+                elements.dashboardView.classList.add('hidden');
+            }
+        }
+        
+        async function loadUserData() {
+            if (!authState.isLoggedIn) return;
+            
+            showLoading('Loading user data...');
+            
+            try {
+                // Load wallet balance
+                const walletResponse = await fetch(`${API_BASE_URL}/api/wallet/balance`, {
+                    headers: {
+                        'Authorization': `Bearer ${authState.token}`
+                    }
+                });
+                
+                if (walletResponse.ok) {
+                    const walletData = await walletResponse.json();
+                    elements.walletBalance.textContent = `${walletData.balance.toFixed(2)} MVZx`;
+                }
+                
+                // Load matrix data
+                const matrixResponse = await fetch(`${API_BASE_URL}/api/matrix`, {
+                    headers: {
+                        'Authorization': `Bearer ${authState.token}`
+                    }
+                });
+                
+                if (matrixResponse.ok) {
+                    const matrixData = await matrixResponse.json();
+                    elements.userLevel.textContent = matrixData.level;
+                    elements.directReferrals.textContent = matrixData.directReferrals;
+                    elements.totalTeam.textContent = matrixData.totalTeam;
+                    
+                    // Update rewards table
+                    updateRewardsTable(matrixData.rewards);
+                    
+                    // Update matrix tree
+                    updateMatrixTree(matrixData.tree);
+                }
+                
+                // Load transaction history
+                const transactionsResponse = await fetch(`${API_BASE_URL}/api/transactions`, {
+                    headers: {
+                        'Authorization': `Bearer ${authState.token}`
+                    }
+                });
+                
+                if (transactionsResponse.ok) {
+                    const transactions = await transactionsResponse.json();
+                    updateTransactionTable(transactions);
+                }
+                
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                console.error('Failed to load user data:', error);
+            }
+        }
+        
+        function updateRewardsTable(rewards) {
+            elements.rewardsTable.innerHTML = '';
+            
+            rewards.forEach(reward => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-800';
+                
+                row.innerHTML = `
+                    <td class="py-3">Level ${reward.level}</td>
+                    <td class="py-3 text-right">${reward.requirements}</td>
+                    <td class="py-3 text-right">${reward.amount} MVZx</td>
+                    <td class="py-3 text-right">
+                        <span class="px-2 py-1 rounded text-xs ${getStatusClass(reward.status)}">
+                            ${reward.status}
+                        </span>
+                    </td>
+                `;
+                
+                elements.rewardsTable.appendChild(row);
+            });
+            
+            // Update claim button if there are claimable rewards
+            const claimableRewards = rewards.filter(r => r.status === 'available').reduce((sum, r) => sum + r.amount, 0);
+            if (claimableRewards > 0) {
+                elements.claimRewardsBtn.disabled = false;
+                elements.claimRewardsBtn.innerHTML = `<span>Claim Rewards (${claimableRewards} MVZx)</span>`;
+            } else {
+                elements.claimRewardsBtn.disabled = true;
+                elements.claimRewardsBtn.innerHTML = `<span>Claim Rewards (0 MVZx)</span>`;
+            }
+        }
+        
+        function getStatusClass(status) {
+            switch (status) {
+                case 'claimed': return 'bg-green-500/20 text-green-400';
+                case 'available': return 'bg-yellow-500/20 text-yellow-400';
+                default: return 'bg-gray-500/20 text-gray-400';
+            }
+        }
+        
+        function updateMatrixTree(tree) {
+            elements.level1.innerHTML = '';
+            
+            if (tree && tree.children) {
+                tree.children.forEach((child, index) => {
+                    const node = document.createElement('div');
+                    node.className = 'matrix-node';
+                    node.textContent = child.initials || `L1-${index + 1}`;
+                    elements.level1.appendChild(node);
+                });
+            }
+            
+            // Add placeholder if no referrals
+            if (!tree || !tree.children || tree.children.length === 0) {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'text-center text-gray-400';
+                placeholder.textContent = 'No referrals yet';
+                elements.level1.appendChild(placeholder);
+            }
+        }
+        
+        function updateTransactionTable(transactions) {
+            const tbody = elements.transactionTable.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            if (transactions.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="4" class="py-4 text-center text-gray-400">No transactions yet</td>
+                `;
+                tbody.appendChild(row);
+                return;
+            }
+            
+            transactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-800';
+                
+                const date = new Date(transaction.date).toLocaleDateString();
+                
+                row.innerHTML = `
+                    <td class="py-3">${date}</td>
+                    <td class="py-3">${transaction.type}</td>
+                    <td class="py-3 text-right">${transaction.amount} ${transaction.currency}</td>
+                    <td class="py-3">
+                        <span class="px-2 py-1 rounded text-xs ${getStatusClass(transaction.status)}">
+                            ${transaction.status}
+                        </span>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        function switchTab(tab) {
+            // Update active tab button
+            elements.tabButtons.forEach(button => {
+                if (button.getAttribute('data-tab') === tab) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+            
+            // Show selected tab panel
+            elements.tabPanels.forEach(panel => {
+                if (panel.id === `${tab}-tab`) {
+                    panel.classList.remove('hidden');
+                } else {
+                    panel.classList.add('hidden');
+                }
+            });
+        }
+        
+        function updatePaymentUI() {
+            // Hide all method details
+            elements.usdtDetails.classList.add('hidden');
+            elements.manualDetails.classList.add('hidden');
+            
+            // Update purchase button text
+            let methodText = '';
+            switch (paymentState.method) {
+                case 'card':
+                    methodText = 'Credit Card';
+                    break;
+                case 'flutterwave':
+                    methodText = 'Flutterwave';
+                    break;
+                case 'usdt':
+                    methodText = 'USDT';
+                    elements.usdtDetails.classList.remove('hidden');
+                    break;
+                case 'manual':
+                    methodText = 'Manual Deposit';
+                    elements.manualDetails.classList.remove('hidden');
+                    break;
+            }
+            
+            elements.purchaseBtn.innerHTML = `<span>Buy MVZx with ${methodText}</span>`;
+        }
+        
+        async function handlePurchase() {
+            if (!authState.isLoggedIn) {
+                showAuthModal('signup');
+                return;
+            }
+            
+            const amount = parseFloat(elements.purchaseAmount.value);
+            if (!amount || amount <= 0) {
+                showError('Invalid Amount', 'Please enter a valid amount');
+                return;
+            }
+            
+            showLoading('Processing payment...');
+            
+            try {
+                let response;
+                const payload = { amount };
+                
+                switch (paymentState.method) {
+                    case 'card':
+                        response = await fetch(`${API_BASE_URL}/api/payments/card`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${authState.token}`
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        break;
+                    case 'flutterwave':
+                        response = await fetch(`${API_BASE_URL}/api/payments/flutterwave`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${authState.token}`
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        break;
+                    case 'usdt':
+                        // For USDT, we just need to show the address
+                        hideLoading();
+                        return;
+                    case 'manual':
+                        // For manual deposit, we just need to show instructions
+                        hideLoading();
+                        return;
+                }
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    hideLoading();
+                    
+                    if (data.paymentUrl) {
+                        // Redirect to payment gateway
+                        window.location.href = data.paymentUrl;
+                    } else {
+                        showSuccess('Success!', 'Your purchase was successful. MVZx tokens will be credited to your account shortly.');
+                        elements.purchaseAmount.value = '';
+                        loadUserData(); // Refresh user data
+                    }
+                } else {
+                    throw new Error(data.message || 'Payment failed');
                 }
             } catch (error) {
                 hideLoading();
-                showError(
-                    `${action === 'login' ? 'Login' : 'Registration'} Error`, 
-                    'Server configuration issue. Please contact support if this persists.'
-                );
+                showError('Payment Error', error.message);
             }
         }
-          
-        // PIN validation function - Frontend JavaScript  
-        function validatePIN(pin) {  
-            return /^\d{4}$/.test(pin);  
-        }  
-          
-        // Test backend connection - Frontend JavaScript  
-        async function testBackendConnection() {  
-            try {  
-                // Show connection status
-                elements.connectionStatus.classList.remove('hidden');
-                elements.connectionStatus.classList.remove('connected', 'disconnected');
-                elements.connectionIcon.className = 'fas fa-circle-notch fa-spin';
-                elements.connectionText.textContent = 'Checking connection...';
+        
+        async function handleWithdraw() {
+            const amount = parseFloat(elements.withdrawAmount.value);
+            const address = elements.withdrawAddress.value;
+            const network = elements.withdrawNetwork.value;
+            
+            if (!amount || amount < 50) {
+                showError('Invalid Amount', 'Minimum withdrawal is 50 MVZx');
+                return;
+            }
+            
+            if (!address) {
+                showError('Invalid Address', 'Please enter a valid wallet address');
+                return;
+            }
+            
+            showLoading('Processing withdrawal...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/wallet/withdraw`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authState.token}`
+                    },
+                    body: JSON.stringify({ amount, address, network })
+                });
                 
-                const response = await fetch(`${API_BASE_URL}/api/health`, {
-                    // Add timeout to prevent hanging
-                    signal: AbortSignal.timeout(5000)
-                });  
-
-                // Try alternative health endpoint if first one fails
-                if (!response.ok) {
-                    const altResponse = await fetch(`${API_BASE_URL}/health`, {
-                        signal: AbortSignal.timeout(5000)
-                    });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    hideLoading();
+                    showSuccess('Success!', 'Your withdrawal request has been submitted. It will be processed within 24-48 hours.');
                     
-                    if (altResponse.ok) {
-                        const data = await altResponse.json();
-                        backendConnected = data.success === true;
-                    } else {
-                        throw new Error('Health check failed');
-                    }
-                } else {
-                    const data = await response.json();
-                    backendConnected = data.success === true;
-                }
-                
-                // Update connection status UI
-                if (backendConnected) {
-                    elements.connectionStatus.classList.add('connected');
-                    elements.connectionIcon.className = 'fas fa-check-circle';
-                    elements.connectionText.textContent = 'Connected to server';
+                    // Clear form
+                    elements.withdrawAmount.value = '';
+                    elements.withdrawAddress.value = '';
                     
-                    // Auto-hide after 3 seconds
-                    setTimeout(() => {
-                        elements.connectionStatus.classList.add('hidden');
-                    }, 3000);
+                    // Refresh transactions
+                    loadUserData();
                 } else {
-                    throw new Error('Health check did not return success');
+                    throw new Error(data.message || 'Withdrawal failed');
                 }
-                
-                return backendConnected;
-            } catch (error) {  
-                console.error('Backend connection test failed:', error);  
-                backendConnected = false;
-                
-                // Update connection status UI
-                elements.connectionStatus.classList.add('disconnected');
-                elements.connectionIcon.className = 'fas fa-exclamation-circle';
-                elements.connectionText.textContent = 'Server connection issue';
-                
-                // Don't auto-hide error status
-                return false;  
-            }  
-        }  
-          
-        function logout() {  
-            authState.isLoggedIn = false;  
-            authState.token = null;  
-            authState.user = null;  
-              
-            localStorage.removeItem('mvzx_token');  
-            localStorage.removeItem('mvzx_user');  
-              
-            updateUIForAuthState();  
-        }  
-          
-        function updateUIForAuthState() {  
-            if (authState.isLoggedIn) {  
-                elements.authText.textContent = 'Dashboard';  
-                elements.demoWarning.classList.add('hidden');  
-                elements.landingView.classList.add('hidden');  
-                elements.dashboardView.classList.remove('hidden');  
-            } else {  
-                elements.authText.textContent = 'Sign Up';  
-                elements.demoWarning.classList.remove('hidden');  
-                elements.landingView.classList.remove('hidden');  
-                elements.dashboardView.classList.add('hidden');  
-            }  
-        }  
-          
-        async function loadUserData() {  
-            if (!authState.isLoggedIn) return;  
-              
-            showLoading('Loading user data...');  
-              
-            try {  
-                // Load wallet balance  
-                const walletResponse = await fetch(`${API_BASE_URL}/wallet`, {  
-                    headers: {  
-                        'Authorization': `Bearer ${authState.token}`  
-                    }  
-                });  
-                  
-                if (walletResponse.ok) {  
-                    const walletData = await walletResponse.json();  
-                    elements.walletBalance.textContent = `${walletData.balance.toFixed(2)} MVZx`;  
-                }  
-                  
-                // Load matrix data  
-                const matrixResponse = await fetch(`${API_BASE_URL}/matrix`, {  
-                    headers: {  
-                        'Authorization': `Bearer ${authState.token}`  
-                    }  
-                });  
-                  
-                if (matrixResponse.ok) {  
-                    const matrixData = await matrixResponse.json();  
-                    elements.userLevel.textContent = matrixData.level;  
-                    elements.directReferrals.textContent = matrixData.directReferrals;  
-                    elements.totalTeam.textContent = matrixData.totalTeam;  
-                      
-                    // Update rewards table  
-                    updateRewardsTable(matrixData.rewards);  
-                      
-                    // Update matrix tree  
-                    updateMatrixTree(matrixData.tree);  
-                }  
-                  
-                // Load transaction history  
-                const transactionsResponse = await fetch(`${API_BASE_URL}/transactions`, {  
-                    headers: {  
-                        'Authorization': `Bearer ${authState.token}`  
-                    }  
-                });  
-                  
-                if (transactionsResponse.ok) {  
-                    const transactions = await transactionsResponse.json();  
-                    updateTransactionTable(transactions);  
-                }  
-                  
-                hideLoading();  
-            } catch (error) {  
-                hideLoading();  
-                console.error('Failed to load user data:', error);  
-            }  
-        }  
-          
-        function updateRewardsTable(rewards) {  
-            elements.rewardsTable.innerHTML = '';  
-              
-            rewards.forEach(reward => {  
-                const row = document.createElement('tr');  
-                row.className = 'border-b border-gray-800';  
-                  
-                row.innerHTML = `  
-                    <td class="py-3">Level ${reward.level}</td>  
-                    <td class="py-3 text-right">${reward.requirements}</td>  
-                    <td class="py-3 text-right">${reward.amount} MVZx</td>  
-                    <td class="py-3 text-right">  
-                        <span class="px-2 py-1 rounded text-xs ${getStatusClass(reward.status)}">  
-                            ${reward.status}  
-                        </span>  
-                    </td>  
-                `;  
-                  
-                elements.rewardsTable.appendChild(row);  
-            });  
-              
-            // Update claim button if there are claimable rewards  
-            const claimableRewards = rewards.filter(r => r.status === 'available').reduce((sum, r) => sum + r.amount, 0);  
-            if (claimableRewards > 0) {  
-                elements.claimRewardsBtn.disabled = false;  
-                elements.claimRewardsBtn.innerHTML = `<span>Claim Rewards (${claimableRewards} MVZx)</span>`;  
-            } else {  
-                elements.claimRewardsBtn.disabled = true;  
-                elements.claimRewardsBtn.innerHTML = `<span>Claim Rewards (0 MVZx)</span>`;  
-            }  
-        }  
-          
-        function getStatusClass(status) {  
-            switch (status) {  
-                case 'claimed': return 'bg-green-500/20 text-green-400';  
-                case 'available': return 'bg-yellow-500/20 text-yellow-400';  
-                default: return 'bg-gray-500/20 text-gray-400';  
-            }  
-        }  
-          
-        function updateMatrixTree(tree) {  
-            elements.level1.innerHTML = '';  
-              
-            if (tree && tree.children) {  
-                tree.children.forEach((child, index) => {  
-                    const node = document.createElement('div');  
-                    node.className = 'matrix-node';  
-                    node.textContent = child.initials || `L1-${index + 1}`;  
-                    elements.level1.appendChild(node);  
-                });  
-            }  
-              
-            // Add placeholder if no referrals  
-            if (!tree || !tree.children || tree.children.length === 0) {  
-                const placeholder = document.createElement('div');  
-                placeholder.className = 'text-center text-gray-400';  
-                placeholder.textContent = 'No referrals yet';  
-                elements.level1.appendChild(placeholder);  
-            }  
-        }  
-          
-        function updateTransactionTable(transactions) {  
-            const tbody = elements.transactionTable.querySelector('tbody');  
-            tbody.innerHTML = '';  
-              
-            if (transactions.length === 0) {  
-                const row = document.createElement('tr');  
-                row.innerHTML = `  
-                    <td colspan="4" class="py-4 text-center text-gray-400">No transactions yet</td>  
-                `;  
-                tbody.appendChild(row);  
-                return;  
-            }  
-              
-            transactions.forEach(transaction => {  
-                const row = document.createElement('tr');  
-                row.className = 'border-b border-gray-800';  
-                  
-                const date = new Date(transaction.date).toLocaleDateString();  
-                  
-                row.innerHTML = `  
-                    <td class="py-3">${date}</td>  
-                    <td class="py-3">${transaction.type}</td>  
-                    <td class="py-3 text-right">${transaction.amount} ${transaction.currency}</td>  
-                    <td class="py-3">  
-                        <span class="px-2 py-1 rounded text-xs ${getStatusClass(transaction.status)}">  
-                            ${transaction.status}  
-                        </span>  
-                    </td>  
-                `;  
-                  
-                tbody.appendChild(row);  
-            });  
-        }  
-          
-        function switchTab(tab) {  
-            // Update active tab button  
-            elements.tabButtons.forEach(button => {  
-                if (button.getAttribute('data-tab') === tab) {  
-                    button.classList.add('active');  
-                } else {  
-                    button.classList.remove('active');  
-                }  
-            });  
-              
-            // Show selected tab panel  
-            elements.tabPanels.forEach(panel => {  
-                if (panel.id === `${tab}-tab`) {  
-                    panel.classList.remove('hidden');  
-                } else {  
-                    panel.classList.add('hidden');  
-                }  
-            });  
-        }  
-          
-        function updatePaymentUI() {  
-            // Hide all method details  
-            elements.usdtDetails.classList.add('hidden');  
-            elements.manualDetails.classList.add('hidden');  
-              
-            // Update purchase button text  
-            let methodText = '';  
-            switch (paymentState.method) {  
-                case 'card':  
-                    methodText = 'Credit Card';  
-                    break;  
-                case 'flutterwave':  
-                    methodText = 'Flutterwave';  
-                    break;  
-                case 'usdt':  
-                    methodText = 'USDT';  
-                    elements.usdtDetails.classList.remove('hidden');  
-                    break;  
-                case 'manual':  
-                    methodText = 'Manual Deposit';  
-                    elements.manualDetails.classList.remove('hidden');  
-                    break;  
-            }  
-              
-            elements.purchaseBtn.innerHTML = `<span>Buy MVZx with ${methodText}</span>`;  
-        }  
-          
-        async function handlePurchase() {  
-            if (!authState.isLoggedIn) {  
-                showAuthModal('signup');  
-                return;  
-            }  
-              
-            const amount = parseFloat(elements.purchaseAmount.value);  
-            if (!amount || amount <= 0) {  
-                showError('Invalid Amount', 'Please enter a valid amount');  
-                return;  
-            }  
-              
-            showLoading('Processing payment...');  
-              
-            try {  
-                let response;  
-                const payload = { amount };  
-                  
-                switch (paymentState.method) {  
-                    case 'card':  
-                        response = await fetch(`${API_BASE_URL}/payments/card`, {  
-                            method: 'POST',  
-                            headers: {  
-                                'Content-Type': 'application/json',  
-                                'Authorization': `Bearer ${authState.token}`  
-                            },  
-                            body: JSON.stringify(payload)  
-                        });  
-                        break;  
-                    case 'flutterwave':  
-                        response = await fetch(`${API_BASE_URL}/payments/flutterwave`, {  
-                            method: 'POST',  
-                            headers: {  
-                                'Content-Type': 'application/json',  
-                                'Authorization': `Bearer ${authState.token}`  
-                            },  
-                            body: JSON.stringify(payload)  
-                        });  
-                        break;  
-                    case 'usdt':  
-                        // For USDT, we just need to show the address  
-                        hideLoading();  
-                        return;  
-                    case 'manual':  
-                        // For manual deposit, we just need to show instructions  
-                        hideLoading();  
-                        return;  
-                }  
-                  
-                const data = await response.json();  
-                  
-                if (response.ok) {  
-                    hideLoading();  
-                      
-                    if (data.paymentUrl) {  
-                        // Redirect to payment gateway  
-                        window.location.href = data.paymentUrl;  
-                    } else {  
-                        showSuccess('Success!', 'Your purchase was successful. MVZx tokens will be credited to your account shortly.');  
-                        elements.purchaseAmount.value = '';  
-                        loadUserData(); // Refresh user data  
-                    }  
-                } else {  
-                    throw new Error(data.message || 'Payment failed');  
-                }  
-            } catch (error) {  
-                hideLoading();  
-                showError('Payment Error', error.message);  
-            }  
-        }  
-          
-        async function handleWithdraw() {  
-            const amount = parseFloat(elements.withdrawAmount.value);  
-            const address = elements.withdrawAddress.value;  
-            const network = elements.withdrawNetwork.value;  
-              
-            if (!amount || amount < 50) {  
-                showError('Invalid Amount', 'Minimum withdrawal is 50 MVZx');  
-                return;  
-            }  
-              
-            if (!address) {  
-                showError('Invalid Address', 'Please enter a valid wallet address');  
-                return;  
-            }  
-              
-            showLoading('Processing withdrawal...');  
-              
-            try {  
-                const response = await fetch(`${API_BASE_URL}/wallet/withdraw`, {  
-                    method: 'POST',  
-                    headers: {  
-                        'Content-Type': 'application/json',  
-                        'Authorization': `Bearer ${authState.token}`  
-                    },  
-                    body: JSON.stringify({ amount, address, network })  
-                });  
-                  
-                const data = await response.json();  
-                  
-                if (response.ok) {  
-                    hideLoading();  
-                    showSuccess('Success!', 'Your withdrawal request has been submitted. It will be processed within 24-48 hours.');  
-                      
-                    // Clear form  
-                    elements.withdrawAmount.value = '';  
-                    elements.withdrawAddress.value = '';  
-                      
-                    // Refresh transactions  
-                    loadUserData();  
-                } else {  
-                    throw new Error(data.message || 'Withdrawal failed');  
-                }  
-            } catch (error) {  
-                hideLoading();  
-                showError('Withdrawal Error', error.message);  
-            }  
-        }  
-          
-        function showLoading(text) {  
-            elements.loadingText.textContent = text;  
-            elements.loadingOverlay.classList.remove('hidden');  
-        }  
-          
-        function hideLoading() {  
-            elements.loadingOverlay.classList.add('hidden');  
-        }  
-          
-        function showSuccess(title, message) {  
-            elements.successTitle.textContent = title;  
-            elements.successMessage.textContent = message;  
-            elements.successModal.classList.remove('hidden');  
-        }  
-          
-        function showError(title, message) {  
-            elements.errorMessage.textContent = message;  
-            elements.errorModal.classList.remove('hidden');  
-        }  
-    </script>  
-</body>  
+            } catch (error) {
+                hideLoading();
+                showError('Withdrawal Error', error.message);
+            }
+        }
+        
+        function validatePIN(pin) {
+            return /^\d{4}$/.test(pin);
+        }
+        
+        async function testBackendConnection() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`);
+                const data = await response.json();
+                console.log('Backend health check:', data);
+                return data.success === true;
+            } catch (error) {
+                console.error('Backend connection test failed:', error);
+                showError('Connection Error', 'Cannot connect to server. Please check if the backend is running.');
+                return false;
+            }
+        }
+        
+        function showLoading(text) {
+            elements.loadingText.textContent = text;
+            elements.loadingOverlay.classList.remove('hidden');
+        }
+        
+        function hideLoading() {
+            elements.loadingOverlay.classList.add('hidden');
+        }
+        
+        function showSuccess(title, message) {
+            elements.successTitle.textContent = title;
+            elements.successMessage.textContent = message;
+            elements.successModal.classList.remove('hidden');
+        }
+        
+        function showError(title, message) {
+            elements.errorMessage.textContent = message;
+            elements.errorModal.classList.remove('hidden');
+        }
+    </script>
+</body>
 </html>
