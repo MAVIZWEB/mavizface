@@ -493,7 +493,160 @@
         </div>
     </div>
 
-    <script>
+    <script>  // API Base URL - Frontend JavaScript
+const API_BASE_URL = 'https://mavizweb.onrender.com';
+
+// Authentication functions - Frontend JavaScript
+async function handleAuthSubmit(e) {
+  e.preventDefault();
+  
+  const isLogin = elements.authModalTitle.textContent === 'Login';
+  const email = elements.authEmail.value;
+  
+  if (isLogin) {
+    const pin = elements.authLoginPin.value;
+    
+    if (!validatePIN(pin)) {
+      showError('Invalid PIN', 'PIN must be 4 digits');
+      return;
+    }
+    
+    showLoading('Logging in...');
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, pin })
+      });
+      
+      // First check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(`Server returned HTML instead of JSON. Status: ${response.status}. Response: ${text.substring(0, 100)}...`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Save auth data
+        authState.isLoggedIn = true;
+        authState.token = data.token;
+        authState.user = data.user;
+        
+        localStorage.setItem('mvzx_token', data.token);
+        localStorage.setItem('mvzx_user', JSON.stringify(data.user));
+        
+        hideLoading();
+        elements.authModal.classList.add('hidden');
+        updateUIForAuthState();
+        loadUserData();
+        
+        showSuccess('Success!', 'You have successfully logged in.');
+      } else {
+        throw new Error(data.error || 'Login failed');
+      }
+    } catch (error) {
+      hideLoading();
+      showError('Login Error', error.message);
+    }
+  } else {
+    // Signup handling
+    const pin = elements.authPin.value;
+    const confirmPin = elements.authConfirmPin.value;
+    const referral = elements.authReferral.value;
+    
+    if (!validatePIN(pin)) {
+      showError('Invalid PIN', 'PIN must be 4 digits');
+      return;
+    }
+    
+    if (pin !== confirmPin) {
+      showError('PIN Mismatch', 'PINs do not match');
+      return;
+    }
+    
+    showLoading('Creating account...');
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          pin,
+          referralCode: referral || undefined
+        })
+      });
+      
+      // First check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(`Server returned HTML instead of JSON. Status: ${response.status}. Response: ${text.substring(0, 100)}...`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Save auth data
+        authState.isLoggedIn = true;
+        authState.token = data.token;
+        authState.user = data.user;
+        
+        localStorage.setItem('mvzx_token', data.token);
+        localStorage.setItem('mvzx_user', JSON.stringify(data.user));
+        localStorage.setItem('mvzx_wallet', data.walletAddress);
+        
+        hideLoading();
+        elements.authModal.classList.add('hidden');
+        updateUIForAuthState();
+        loadUserData();
+        
+        showSuccess('Account Created!', 
+          `Your account has been created successfully. Your wallet address is: ${data.walletAddress}`);
+      } else {
+        throw new Error(data.error || 'Registration failed');
+      }
+    } catch (error) {
+      hideLoading();
+      showError('Registration Error', error.message);
+    }
+  }
+}
+
+// PIN validation function - Frontend JavaScript
+function validatePIN(pin) {
+  return /^\d{4}$/.test(pin);
+}
+
+// Test backend connection - Frontend JavaScript
+async function testBackendConnection() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/health`);
+    const data = await response.json();
+    console.log('Backend health check:', data);
+    return data.success === true;
+  } catch (error) {
+    console.error('Backend connection test failed:', error);
+    return false;
+  }
+}
+
+// Call this when your page loads
+document.addEventListener('DOMContentLoaded', function() {
+  testBackendConnection().then(isConnected => {
+    if (!isConnected) {
+      console.error('Cannot connect to backend API');
+      showError('Connection Error', 'Cannot connect to server. Please check your internet connection and try again.');
+    }
+  });
+});
         // API Base URL - Replace with your Render backend URL
         const API_BASE_URL = 'https://mavizweb.onrender.com';
         
